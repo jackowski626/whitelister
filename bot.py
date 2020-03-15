@@ -129,7 +129,7 @@ techicienRoleID = ***********
 administrateurRoleID = ***********
 ModerateurRoleID = ***********
 
-MESSAGE_DE_DEMANDE_ID = 688666032667361317
+MESSAGE_DE_DEMANDE_ID = ***********
 
 prefix = "";
 
@@ -197,8 +197,6 @@ async def on_message(message):
 @bot.event
 async def on_raw_reaction_add(reaction):
     user = bot.get_user(reaction.user_id)
-    
-    #member = bot.get_member(reaction.user_id)
     if user == bot.user:
         return
     fullUsername = user.name+"#"+user.discriminator
@@ -207,7 +205,6 @@ async def on_raw_reaction_add(reaction):
     if reaction.channel_id == DEMANDER_CHANNEL:
         messagee = await bot.get_channel(DEMANDER_CHANNEL).fetch_message(reaction.message_id)
         print("yessaie")
-    #print("channel: "+pp.pformat(reaction))
     #reaction attributes: <RawReactionActionEvent message_id=*********** user_id=*********** channel_id=*********** guild_id=*********** emoji=<PartialEmoji animated=False name='✅' id=None>>
         #check if username not alrady in usersWaitingForNicknameConfirmation
         grabDB("db.json")
@@ -229,8 +226,6 @@ async def on_raw_reaction_add(reaction):
     elif reaction.channel_id == EN_SUSPENS_CHANNEL:
         messagee = await bot.get_channel(EN_SUSPENS_CHANNEL).fetch_message(reaction.message_id)
         if str(reaction.emoji) == "🚫":
-            #await bot.get_channel(EN_SUSPENS_CHANNEL).send("vous avez réagi avec: "+pp.pformat(reaction.emoji))
-            #await bot.get_channel(EN_SUSPENS_CHANNEL).send("reaction.user_id is: "+pp.pformat(reaction.user_id))
             if user.mention in messagee.content:
                 messageDeDemande = await bot.get_channel(DEMANDER_CHANNEL).fetch_message(MESSAGE_DE_DEMANDE_ID)
                 await messageDeDemande.remove_reaction("✅", user)
@@ -317,7 +312,6 @@ async def on_raw_reaction_add(reaction):
                         await messagee.channel.send(tempUser.mention+", votre demande de whitelist a été acceptée.")
                         await messagee.delete()
                         grabUuids("whitelist.json")
-                        #print("grabbed uuids, whitelist is: "+pp.pformat())
                         with open('whitelist.json', 'r+') as f:
                             #textfile = str()
                             whitelistData = json.load(f)
@@ -334,7 +328,6 @@ async def on_message(message):
     if message.author == bot.user:
         return
     if str(message.channel)[0:6] == "Direct":
-        #await message.channel.send("Ce channel est un DM")
         fullUsername = message.author.name+"#"+message.author.discriminator
         #check if username not alrady in usersWaitingForNicknameConfirmation
         grabDB("db.json")
@@ -387,6 +380,5 @@ async def prefix(ctx,*,message):
 async def info_error(ctx, error):
     if isinstance(error, commands.BadArgument):
         print("Bad argument(s) for prefix command")
-        #await ctx.send('I could not find that member...')
 
 bot.run(TOKEN)
